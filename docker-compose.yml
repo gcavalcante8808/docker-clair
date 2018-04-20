@@ -1,0 +1,32 @@
+version: '3.4'
+
+volumes:
+  dbdata:
+  registry_data:
+
+services:
+  db:
+    image: postgres:9.6
+    restart: unless-stopped
+    volumes:
+     - dbdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: clair
+      POSTGRES_USER: clair
+      POSTGRES_PASSWORD: clair
+
+  clair:
+    image: clair-local:v2.0.2
+    build: clair/
+    restart: unless-stopped
+    environment:
+      DB_HOST: db
+      DB_USER: clair
+      DB_PASSWORD: clair
+      DB_NAME: clair
+      DB_PORT: 5432
+    tmpfs:
+     - /tmp
+    depends_on:
+     - db
+
